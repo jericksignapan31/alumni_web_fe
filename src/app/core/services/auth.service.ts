@@ -17,6 +17,7 @@ export interface LoginResponse {
     first_name: string;
     last_name: string;
     role: string;
+    campus_id: string;
     campus: string;
   };
   token: string;
@@ -28,6 +29,7 @@ export interface AuthUser {
   first_name: string;
   last_name: string;
   role: string;
+  campus_id: string;
   campus: string;
 }
 

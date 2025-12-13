@@ -60,6 +60,14 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'bg-colors'
       },
       {
+        id: 'alumni-network',
+        title: '',
+        type: 'item',
+        classes: 'nav-item',
+        url: '/alumni-network',
+        icon: 'team'
+      },
+      {
         id: 'ant-icons',
         title: 'Ant Icons',
         type: 'item',
@@ -68,23 +76,6 @@ export const NavigationItems: NavigationItem[] = [
         icon: 'ant-design',
         target: true,
         external: true
-      }
-    ]
-  },
-
-  {
-    id: 'other',
-    title: 'Community',
-    type: 'group',
-    icon: 'icon-navigation',
-    children: [
-      {
-        id: 'sample-page',
-        title: 'Alumni Network',
-        type: 'item',
-        url: '/alumni-network',
-        classes: 'nav-item',
-        icon: 'chrome'
       }
     ]
   }

@@ -1,66 +1,84 @@
-<div class="row">
-  <div class="col-sm-12">
-    <app-card cardTitle="Alumni Network Posts">
-      @if (isLoading) {
-        <div class="text-center py-4">
-          <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      } @else if (errorMessage) {
-        <div class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
-          <span>{{ errorMessage }}</span>
-          <button class="btn btn-sm btn-light" (click)="loadPosts()">Retry</button>
-        </div>
-      } @else {
-        @if (!posts.length) {
-          <p class="mb-0 text-muted">No posts available.</p>
+<div class="alumni-container">
+  <!-- Post Creation Form -->
+  <div class="create-post-section">
+    <input type="text" class="post-input-title" placeholder="Post title (optional)" [(ngModel)]="postTitle" [disabled]="isSubmitting" />
+    <textarea class="post-input" rows="3" placeholder="What's on your mind?" [(ngModel)]="postContent" [disabled]="isSubmitting"></textarea>
+
+    @if (selectedImagePreview) {
+      <div class="image-preview">
+        <img [src]="selectedImagePreview" alt="preview" />
+        <button type="button" class="btn-remove" (click)="removeImage()" [disabled]="isSubmitting">✕</button>
+      </div>
+    }
+
+    <div class="form-actions">
+      <input type="file" #fileInput hidden accept="image/*" (change)="onImageSelected($event)" [disabled]="isSubmitting" />
+      <button type="button" class="btn-upload" (click)="fileInput.click()" [disabled]="isSubmitting">
+        <i antIcon type="picture" theme="outline"></i>
+      </button>
+      <button type="button" class="btn-post" (click)="submitPost()" [disabled]="isSubmitting || !postContent.trim()">
+        @if (isSubmitting) {
+          <span class="spinner-border spinner-border-sm" role="status"></span>
         } @else {
-          <div class="post-feed">
-            @for (post of posts; track post.id ?? post.created_at ?? post) {
-              <div class="post-card">
-                <div class="post-header">
-                  <div class="post-author">
-                    <div class="avatar-placeholder">{{ getAuthorInitial(post) }}</div>
-                    <div>
-                      <div class="author-name">
-                        {{ getAuthorName(post) }}
-                      </div>
-                      <div class="post-meta text-muted">
-                        {{ getPostDate(post) | date: 'medium' }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          <span>Post</span>
+        }
+      </button>
+    </div>
+  </div>
 
-                <div class="post-body">
-                  @if (post.title) {
-                    <h6 class="post-title mb-1">{{ post.title }}</h6>
-                  }
-                  <p class="mb-0">{{ post.content || post.body || 'No content provided.' }}</p>
-                </div>
-
-                @if (post.upload_optional) {
-                  <div class="post-image-wrapper">
-                    <img [src]="post.upload_optional" alt="post image" class="post-image" />
-                  </div>
-                }
-
-                <div class="post-actions">
-                  <button type="button" class="btn btn-link text-decoration-none">
-                    <i antIcon type="heart" theme="outline" class="me-1"></i>
-                    <span>{{ post.heart_count ?? post.reactions?.heart ?? 0 }}</span>
-                  </button>
-                  <button type="button" class="btn btn-link text-decoration-none">
-                    <i antIcon type="message" theme="outline" class="me-1"></i>
-                    <span>{{ post.comment_count ?? post.comments_count ?? post.comments?.length ?? 0 }}</span>
-                  </button>
+  <!-- Posts Feed -->
+  <div class="posts-section">
+    @if (isLoading) {
+      <div class="text-center py-4">
+        <div class="spinner-border" role="status"></div>
+      </div>
+    } @else if (errorMessage) {
+      <div class="error-banner">
+        <span>{{ errorMessage }}</span>
+        <button class="btn-retry" (click)="loadPosts()">Retry</button>
+      </div>
+    } @else {
+      @if (!posts.length) {
+        <p class="no-posts">No posts yet</p>
+      } @else {
+        @for (post of posts; track post.id ?? post.created_at ?? post) {
+          <div class="post-item">
+            <div class="post-top">
+              <div class="author-info">
+                <div class="avatar">{{ getAuthorInitial(post) }}</div>
+                <div>
+                  <div class="name">{{ getAuthorName(post) }}</div>
+                  <div class="date">{{ getPostDate(post) | date: 'short' }}</div>
                 </div>
               </div>
+            </div>
+
+            <div class="post-content">
+              @if (post.title) {
+                <h6>{{ post.title }}</h6>
+              }
+              <p>{{ post.content || post.body || '' }}</p>
+            </div>
+
+            @if (post.upload_optional) {
+              <div class="post-img">
+                <img [src]="post.upload_optional" alt="post" />
+              </div>
             }
+
+            <div class="post-footer">
+              <button type="button" class="action-btn">
+                <i antIcon type="heart" theme="outline"></i>
+                {{ post.heart_count ?? post.reactions?.heart ?? 0 }}
+              </button>
+              <button type="button" class="action-btn">
+                <i antIcon type="message" theme="outline"></i>
+                {{ post.comment_count ?? post.comments_count ?? post.comments?.length ?? 0 }}
+              </button>
+            </div>
           </div>
         }
       }
-    </app-card>
+    }
   </div>
 </div>
