@@ -1,5 +1,5 @@
 // angular import
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, NgZone } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -30,6 +30,7 @@ export class SamplePageComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private alertService = inject(AlertService);
   private authService = inject(AuthService);
+  private ngZone = inject(NgZone);
 
   posts: any[] = [];
   isLoading = false;
@@ -37,6 +38,8 @@ export class SamplePageComponent implements OnInit {
   reactingMap: Record<string, boolean> = {};
   commentSubmittingMap: Record<string, boolean> = {};
   commentInputs: Record<string, string> = {};
+  commentsLoadingMap: Record<string, boolean> = {};
+  commentsShowMap: Record<string, boolean> = {};
 
   // Post form
   postContent = '';
@@ -196,29 +199,36 @@ export class SamplePageComponent implements OnInit {
 
     const key = this.getPostKey(post);
     this.reactingMap[key] = true;
+    this.cdr.markForCheck();
 
     const payload = { reaction_type: 'heart' };
 
     this.http.post(`${environment.apiUrl}/post/${postId}/react`, payload).subscribe({
       next: (updated: any) => {
-        const heartCount = updated?.heart_count ?? updated?.reactions?.heart;
-        if (heartCount !== undefined) {
-          post.heart_count = heartCount;
-        } else if (post.heart_count !== undefined) {
-          post.heart_count = Number(post.heart_count) + 1;
-        }
+        this.ngZone.run(() => {
+          const heartCount = updated?.heart_count ?? updated?.reactions?.heart;
+          if (heartCount !== undefined) {
+            post.heart_count = heartCount;
+          } else if (post.heart_count !== undefined) {
+            post.heart_count = Number(post.heart_count) + 1;
+          }
 
-        if (updated?.reactions) {
-          post.reactions = updated.reactions;
-        }
+          if (updated?.reactions) {
+            post.reactions = updated.reactions;
+          }
 
-        this.reactingMap[key] = false;
+          this.reactingMap[key] = false;
+          this.cdr.markForCheck();
+        });
       },
       error: (error) => {
         console.error('React error:', error);
         const friendly = error?.error?.message || 'Failed to react to post.';
         this.alertService.error(friendly);
-        this.reactingMap[key] = false;
+        this.ngZone.run(() => {
+          this.reactingMap[key] = false;
+          this.cdr.markForCheck();
+        });
       }
     });
   }
@@ -246,19 +256,26 @@ export class SamplePageComponent implements OnInit {
     const payload = { content };
 
     this.commentSubmittingMap[key] = true;
+    this.cdr.markForCheck();
 
     this.http.post(`${environment.apiUrl}/post/${postId}/comments`, payload).subscribe({
       next: () => {
-        this.alertService.success('Comment posted');
-        this.commentInputs[key] = '';
-        this.commentSubmittingMap[key] = false;
-        this.loadPosts();
+        this.ngZone.run(() => {
+          this.alertService.success('Comment posted');
+          this.commentInputs[key] = '';
+          this.commentSubmittingMap[key] = false;
+          this.cdr.markForCheck();
+          this.loadPosts();
+        });
       },
       error: (error) => {
         console.error('Comment error:', error);
         const friendly = error?.error?.message || 'Failed to post comment.';
         this.alertService.error(friendly);
-        this.commentSubmittingMap[key] = false;
+        this.ngZone.run(() => {
+          this.commentSubmittingMap[key] = false;
+          this.cdr.markForCheck();
+        });
       }
     });
   }
@@ -308,5 +325,82 @@ export class SamplePageComponent implements OnInit {
       (reaction: any) => (reaction?.user_id === userId || reaction?.user?.user_id === userId) && reaction?.is_active
     );
     return !!userReaction;
+  }
+
+  loadComments(post: any): void {
+    const postId = this.getPostId(post);
+    const key = this.getPostKey(post);
+
+    if (!postId) {
+      this.alertService.error('Post id is missing.');
+      return;
+    }
+
+    // Toggle visibility
+    if (this.commentsShowMap[key]) {
+      this.commentsShowMap[key] = false;
+      this.cdr.markForCheck();
+      return;
+    }
+
+    // Already loaded, just toggle visibility
+    if (post.loadedComments) {
+      this.commentsShowMap[key] = true;
+      this.cdr.markForCheck();
+      return;
+    }
+
+    // Fetch comments
+    this.commentsLoadingMap[key] = true;
+    this.cdr.markForCheck();
+
+    this.http.get<any[]>(`${environment.apiUrl}/post/${postId}/comments`).subscribe({
+      next: (comments) => {
+        this.ngZone.run(() => {
+          post.loadedComments = comments || [];
+          this.commentsShowMap[key] = true;
+          this.commentsLoadingMap[key] = false;
+          this.cdr.markForCheck();
+        });
+      },
+      error: (error) => {
+        console.error('Load comments error:', error);
+        const friendly = error?.error?.message || 'Failed to load comments.';
+        this.alertService.error(friendly);
+        this.ngZone.run(() => {
+          this.commentsLoadingMap[key] = false;
+          this.cdr.markForCheck();
+        });
+      }
+    });
+  }
+
+  toggleCommentsVisibility(post: any): void {
+    const key = this.getPostKey(post);
+    this.loadComments(post);
+  }
+
+  isCommentsLoading(post: any): boolean {
+    return !!this.commentsLoadingMap[this.getPostKey(post)];
+  }
+
+  areCommentsVisible(post: any): boolean {
+    return !!this.commentsShowMap[this.getPostKey(post)];
+  }
+
+  getCommentAuthorName(comment: any): string {
+    const author = comment?.author;
+    const parts = [author?.first_name, author?.middle_name, author?.last_name];
+    const name = parts
+      .filter((part) => !!part && String(part).trim().length)
+      .map((part) => String(part).trim())
+      .join(' ')
+      .trim();
+    return name || 'Unknown';
+  }
+
+  getCommentAuthorInitial(comment: any): string {
+    const name = this.getCommentAuthorName(comment);
+    return name ? name[0].toUpperCase() : 'A';
   }
 }

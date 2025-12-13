@@ -81,11 +81,37 @@
                   <span>{{ post.heart_count ?? post.reactions?.heart ?? 0 }}</span>
                 }
               </button>
-              <div class="action-btn comment-count">
+              <button type="button" class="action-btn" (click)="toggleCommentsVisibility(post)" [disabled]="isCommentsLoading(post)">
                 <i antIcon type="message" theme="outline"></i>
-                <span>{{ post.comment_count ?? post.comments_count ?? post.comments?.length ?? 0 }}</span>
-              </div>
+                @if (isCommentsLoading(post)) {
+                  <span class="spinner-border spinner-border-sm" role="status"></span>
+                } @else {
+                  <span>{{ post.comment_count ?? post.comments_count ?? post.loadedComments?.length ?? post.comments?.length ?? 0 }}</span>
+                }
+              </button>
             </div>
+
+            <!-- Comments Section -->
+            @if (areCommentsVisible(post) && post.loadedComments) {
+              <div class="comments-section">
+                @if (post.loadedComments.length === 0) {
+                  <p class="no-comments">No comments yet</p>
+                } @else {
+                  @for (comment of post.loadedComments; track comment.comment_id ?? comment.id ?? comment) {
+                    <div class="comment-item">
+                      <div class="comment-author">
+                        <div class="comment-avatar">{{ getCommentAuthorInitial(comment) }}</div>
+                        <div class="comment-meta">
+                          <div class="comment-author-name">{{ getCommentAuthorName(comment) }}</div>
+                          <div class="comment-date">{{ comment.created_at | date: 'short' }}</div>
+                        </div>
+                      </div>
+                      <div class="comment-content">{{ comment.content }}</div>
+                    </div>
+                  }
+                }
+              </div>
+            }
 
             <div class="comment-box">
               <input
