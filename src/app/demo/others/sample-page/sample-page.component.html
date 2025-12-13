@@ -67,13 +67,45 @@
             }
 
             <div class="post-footer">
-              <button type="button" class="action-btn">
+              <button
+                type="button"
+                class="action-btn"
+                [class.reacted]="hasUserReacted(post)"
+                (click)="reactToPost(post)"
+                [disabled]="isReacting(post)"
+              >
                 <i antIcon type="heart" theme="outline"></i>
-                {{ post.heart_count ?? post.reactions?.heart ?? 0 }}
+                @if (isReacting(post)) {
+                  <span class="spinner-border spinner-border-sm" role="status"></span>
+                } @else {
+                  <span>{{ post.heart_count ?? post.reactions?.heart ?? 0 }}</span>
+                }
               </button>
-              <button type="button" class="action-btn">
+              <div class="action-btn comment-count">
                 <i antIcon type="message" theme="outline"></i>
-                {{ post.comment_count ?? post.comments_count ?? post.comments?.length ?? 0 }}
+                <span>{{ post.comment_count ?? post.comments_count ?? post.comments?.length ?? 0 }}</span>
+              </div>
+            </div>
+
+            <div class="comment-box">
+              <input
+                type="text"
+                class="comment-input"
+                placeholder="Write a comment..."
+                [(ngModel)]="commentInputs[getPostKey(post)]"
+                [disabled]="isCommentSubmitting(post)"
+              />
+              <button
+                type="button"
+                class="btn-comment"
+                (click)="submitComment(post)"
+                [disabled]="isCommentSubmitting(post) || !commentInputs[getPostKey(post)]?.trim()"
+              >
+                @if (isCommentSubmitting(post)) {
+                  <span class="spinner-border spinner-border-sm" role="status"></span>
+                } @else {
+                  <span>Comment</span>
+                }
               </button>
             </div>
           </div>

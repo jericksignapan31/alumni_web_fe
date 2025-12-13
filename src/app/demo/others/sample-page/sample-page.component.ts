@@ -34,6 +34,9 @@ export class SamplePageComponent implements OnInit {
   posts: any[] = [];
   isLoading = false;
   errorMessage = '';
+  reactingMap: Record<string, boolean> = {};
+  commentSubmittingMap: Record<string, boolean> = {};
+  commentInputs: Record<string, string> = {};
 
   // Post form
   postContent = '';
@@ -79,10 +82,7 @@ export class SamplePageComponent implements OnInit {
       return;
     }
 
-    const currentUser = this.authService.getCurrentUser() ?? this.getUserFromStorageFallback();
-    const userId = currentUser?.user_id ?? (currentUser as any)?.id ?? (currentUser as any)?.userId;
-    const campusIdRaw = (currentUser as any)?.campus_id ?? (currentUser as any)?.campusId;
-    const campusId = campusIdRaw !== undefined && campusIdRaw !== null ? Number(campusIdRaw) : undefined;
+    const { currentUser, userId, campusId, campusIdRaw } = this.resolveUserContext();
 
     console.log('Post submit debug user', { currentUser, userId, campusId, campusIdRaw });
 
@@ -181,6 +181,88 @@ export class SamplePageComponent implements OnInit {
     });
   }
 
+  reactToPost(post: any): void {
+    const postId = this.getPostId(post);
+    if (!postId) {
+      this.alertService.error('Post id is missing.');
+      return;
+    }
+
+    const { userId } = this.resolveUserContext();
+    if (!userId) {
+      this.alertService.error('User information is missing');
+      return;
+    }
+
+    const key = this.getPostKey(post);
+    this.reactingMap[key] = true;
+
+    const payload = { reaction_type: 'heart' };
+
+    this.http.post(`${environment.apiUrl}/post/${postId}/react`, payload).subscribe({
+      next: (updated: any) => {
+        const heartCount = updated?.heart_count ?? updated?.reactions?.heart;
+        if (heartCount !== undefined) {
+          post.heart_count = heartCount;
+        } else if (post.heart_count !== undefined) {
+          post.heart_count = Number(post.heart_count) + 1;
+        }
+
+        if (updated?.reactions) {
+          post.reactions = updated.reactions;
+        }
+
+        this.reactingMap[key] = false;
+      },
+      error: (error) => {
+        console.error('React error:', error);
+        const friendly = error?.error?.message || 'Failed to react to post.';
+        this.alertService.error(friendly);
+        this.reactingMap[key] = false;
+      }
+    });
+  }
+
+  submitComment(post: any): void {
+    const postId = this.getPostId(post);
+    if (!postId) {
+      this.alertService.error('Post id is missing.');
+      return;
+    }
+
+    const key = this.getPostKey(post);
+    const content = (this.commentInputs[key] || '').trim();
+    if (!content) {
+      this.alertService.error('Comment cannot be empty');
+      return;
+    }
+
+    const { userId } = this.resolveUserContext();
+    if (!userId) {
+      this.alertService.error('User information is missing');
+      return;
+    }
+
+    const payload = { content };
+
+    this.commentSubmittingMap[key] = true;
+
+    this.http.post(`${environment.apiUrl}/post/${postId}/comments`, payload).subscribe({
+      next: () => {
+        this.alertService.success('Comment posted');
+        this.commentInputs[key] = '';
+        this.commentSubmittingMap[key] = false;
+        this.loadPosts();
+      },
+      error: (error) => {
+        console.error('Comment error:', error);
+        const friendly = error?.error?.message || 'Failed to post comment.';
+        this.alertService.error(friendly);
+        this.commentSubmittingMap[key] = false;
+      }
+    });
+  }
+
   private getUserFromStorageFallback(): any {
     try {
       const raw = localStorage.getItem('current_user');
@@ -189,5 +271,42 @@ export class SamplePageComponent implements OnInit {
       console.error('Failed to parse stored user', err);
       return null;
     }
+  }
+
+  private resolveUserContext() {
+    const currentUser = this.authService.getCurrentUser() ?? this.getUserFromStorageFallback();
+    const userId = currentUser?.user_id ?? (currentUser as any)?.id ?? (currentUser as any)?.userId;
+    const campusIdRaw = (currentUser as any)?.campus_id ?? (currentUser as any)?.campusId;
+    const campusId = campusIdRaw !== undefined && campusIdRaw !== null ? Number(campusIdRaw) : undefined;
+    return { currentUser, userId, campusId, campusIdRaw };
+  }
+
+  private getPostId(post: any): any {
+    return post?.id ?? post?.post_id ?? post?.postId ?? post?.postID;
+  }
+
+  getPostKey(post: any): string {
+    const key = this.getPostId(post);
+    return key !== undefined && key !== null ? String(key) : String(post?.created_at ?? post);
+  }
+
+  isReacting(post: any): boolean {
+    return !!this.reactingMap[this.getPostKey(post)];
+  }
+
+  isCommentSubmitting(post: any): boolean {
+    return !!this.commentSubmittingMap[this.getPostKey(post)];
+  }
+
+  hasUserReacted(post: any): boolean {
+    const { userId } = this.resolveUserContext();
+    if (!userId || !post?.reactions) {
+      return false;
+    }
+
+    const userReaction = post.reactions.find(
+      (reaction: any) => (reaction?.user_id === userId || reaction?.user?.user_id === userId) && reaction?.is_active
+    );
+    return !!userReaction;
   }
 }
