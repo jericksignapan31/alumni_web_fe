@@ -61,7 +61,7 @@ export const NavigationItems: NavigationItem[] = [
       },
       {
         id: 'alumni-network',
-        title: '',
+        title: 'Alumni Network',
         type: 'item',
         classes: 'nav-item',
         url: '/alumni-network',

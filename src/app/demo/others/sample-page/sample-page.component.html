@@ -1,7 +1,7 @@
 <div class="alumni-container">
   <!-- Post Creation Form -->
   <div class="create-post-section">
-    <input type="text" class="post-input-title" placeholder="Post title (optional)" [(ngModel)]="postTitle" [disabled]="isSubmitting" />
+    <input type="text" class="post-input-title" placeholder="Post title " [(ngModel)]="postTitle" [disabled]="isSubmitting" />
     <textarea class="post-input" rows="3" placeholder="What's on your mind?" [(ngModel)]="postContent" [disabled]="isSubmitting"></textarea>
 
     @if (selectedImagePreview) {
