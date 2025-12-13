@@ -1,5 +1,5 @@
 // angular import
-import { Component, viewChild } from '@angular/core';
+import { Component, OnInit, viewChild } from '@angular/core';
 
 // project import
 
@@ -12,11 +12,17 @@ import { NgApexchartsModule, ChartComponent, ApexOptions } from 'ng-apexcharts';
   templateUrl: './sales-report-chart.component.html',
   styleUrl: './sales-report-chart.component.scss'
 })
-export class SalesReportChartComponent {
+export class SalesReportChartComponent implements OnInit {
   chart = viewChild.required<ChartComponent>('chart');
   chartOptions!: Partial<ApexOptions>;
 
-  constructor() {
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.initializeChart();
+    }, 100);
+  }
+
+  private initializeChart(): void {
     this.chartOptions = {
       chart: {
         type: 'bar',

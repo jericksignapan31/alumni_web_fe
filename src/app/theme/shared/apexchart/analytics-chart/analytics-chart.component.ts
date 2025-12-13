@@ -1,5 +1,5 @@
 // angular import
-import { Component, viewChild } from '@angular/core';
+import { Component, OnInit, viewChild } from '@angular/core';
 
 // project import
 
@@ -12,13 +12,19 @@ import { NgApexchartsModule, ChartComponent, ApexOptions } from 'ng-apexcharts';
   templateUrl: './analytics-chart.component.html',
   styleUrl: './analytics-chart.component.scss'
 })
-export class AnalyticsChartComponent {
+export class AnalyticsChartComponent implements OnInit {
   // public props
   chart = viewChild.required<ChartComponent>('chart');
   chartOptions!: Partial<ApexOptions>;
 
-  //  constructor
-  constructor() {
+  //  life cycle hook
+  ngOnInit() {
+    setTimeout(() => {
+      this.initializeChart();
+    }, 100);
+  }
+
+  private initializeChart(): void {
     this.chartOptions = {
       chart: {
         type: 'line',

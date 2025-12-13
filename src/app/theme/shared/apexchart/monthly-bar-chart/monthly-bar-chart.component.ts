@@ -16,10 +16,20 @@ export class MonthlyBarChartComponent implements OnInit {
   // public props
   chart = viewChild.required<ChartComponent>('chart');
   chartOptions!: Partial<ApexOptions>;
+  isLoading = true;
 
   // life cycle hook
   ngOnInit() {
+    this.isLoading = true;
     document.querySelector('.chart-income.week')?.classList.add('active');
+
+    // Delay chart initialization to ensure DOM is ready
+    setTimeout(() => {
+      this.initializeChart();
+    }, 100);
+  }
+
+  private initializeChart(): void {
     this.chartOptions = {
       chart: {
         height: 450,
@@ -87,6 +97,7 @@ export class MonthlyBarChartComponent implements OnInit {
         mode: 'light'
       }
     };
+    this.isLoading = false;
   }
 
   // public method

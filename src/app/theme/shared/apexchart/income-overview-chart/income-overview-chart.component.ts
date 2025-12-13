@@ -20,6 +20,13 @@ export class IncomeOverviewChartComponent implements OnInit {
 
   // life cycle hook
   ngOnInit() {
+    // Delay chart initialization to ensure DOM is ready
+    setTimeout(() => {
+      this.initializeChart();
+    }, 100);
+  }
+
+  private initializeChart(): void {
     this.chartOptions = {
       chart: {
         type: 'bar',

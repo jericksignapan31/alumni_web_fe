@@ -38,7 +38,7 @@ export class AuthLoginComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard/default';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard/widgets';
     this.initializeForm();
   }
 
