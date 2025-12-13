@@ -15,11 +15,11 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: '/dashboard/default',
+        redirectTo: '/dashboard/widgets',
         pathMatch: 'full'
       },
       {
-        path: 'dashboard/default',
+        path: 'dashboard/widgets',
         loadComponent: () => import('./demo/dashboard/default/default.component').then((c) => c.DefaultComponent)
       },
       {
@@ -31,7 +31,7 @@ const routes: Routes = [
         loadComponent: () => import('./demo/component/basic-component/color/color.component').then((c) => c.ColorComponent)
       },
       {
-        path: 'sample-page',
+        path: 'alumni-network',
         loadComponent: () => import('./demo/others/sample-page/sample-page.component').then((c) => c.SamplePageComponent)
       }
     ]
