@@ -104,7 +104,6 @@
             <h6 class="mb-0">JWT User</h6>
             <span>UI/UX Designer</span>
           </div>
-          <a href="javascript:" class="bg-transparent"><i class="d-flex f-20" antIcon theme="outline" type="logout"></i></a>
         </div>
       </div>
       <ul ngbNav #nav="ngbNav" class="nav drp-tabs nav-fill nav-tabs">
@@ -116,7 +115,7 @@
           <ng-template ngbNavContent>
             @for (task of profile; track task) {
               <div>
-                <a href="javascript:" class="dropdown-item">
+                <a href="javascript:" (click)="onProfileItemClick(task.title)" class="dropdown-item">
                   <i class="text-muted" antIcon theme="outline" type="{{ task.icon }}"></i>
                   <span>{{ task.title }}</span>
                 </a>

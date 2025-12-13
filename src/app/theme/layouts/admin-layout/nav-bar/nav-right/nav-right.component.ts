@@ -1,9 +1,11 @@
 // angular import
 import { Component, output, inject, input } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 
 // project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
+import { AuthService } from 'src/app/core/services/auth.service';
+import { AlertService } from 'src/app/core/services/alert.service';
 
 // third party
 
@@ -37,6 +39,9 @@ import {
 })
 export class NavRightComponent {
   private iconService = inject(IconService);
+  private authService = inject(AuthService);
+  private alertService = inject(AlertService);
+  private router = inject(Router);
 
   // public props
   styleSelectorToggle = input<boolean>();
@@ -117,4 +122,34 @@ export class NavRightComponent {
       title: 'History'
     }
   ];
+
+  // Logout function
+  logout(): void {
+    this.alertService.confirmLogout().then((confirmed) => {
+      if (confirmed) {
+        this.authService.logout();
+        this.alertService.toast('success', 'Logged out successfully!', 2000);
+        this.router.navigate(['/login']);
+      }
+    });
+  }
+
+  // Handle profile menu item clicks
+  onProfileItemClick(itemTitle: string): void {
+    if (itemTitle === 'Logout') {
+      this.logout();
+    } else if (itemTitle === 'Edit Profile') {
+      // Navigate to edit profile page
+      this.router.navigate(['/edit-profile']);
+    } else if (itemTitle === 'View Profile') {
+      // Navigate to view profile page
+      this.router.navigate(['/profile']);
+    } else if (itemTitle === 'Social Profile') {
+      // Navigate to social profile page
+      this.router.navigate(['/social-profile']);
+    } else if (itemTitle === 'Billing') {
+      // Navigate to billing page
+      this.router.navigate(['/billing']);
+    }
+  }
 }

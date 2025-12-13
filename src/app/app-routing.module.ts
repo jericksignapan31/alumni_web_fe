@@ -5,15 +5,17 @@ import { RouterModule, Routes } from '@angular/router';
 // Project import
 import { AdminLayout } from './theme/layouts/admin-layout/admin-layout.component';
 import { GuestLayoutComponent } from './theme/layouts/guest-layout/guest-layout.component';
+import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: AdminLayout,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
-        redirectTo: '/login',
+        redirectTo: '/dashboard/default',
         pathMatch: 'full'
       },
       {
