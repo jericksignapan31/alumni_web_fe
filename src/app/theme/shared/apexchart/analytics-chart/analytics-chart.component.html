@@ -12,17 +12,25 @@
   </div>
   <div class="card-body px-2">
     <div class="chart">
-      <apx-chart
-        [series]="chartOptions.series"
-        [chart]="chartOptions.chart"
-        [plotOptions]="chartOptions.plotOptions"
-        [xaxis]="chartOptions.xaxis"
-        [colors]="chartOptions.colors"
-        [stroke]="chartOptions.stroke"
-        [yaxis]="chartOptions.yaxis"
-        [grid]="chartOptions.grid"
-        [tooltip]="chartOptions.tooltip"
-      ></apx-chart>
+      @if (chartOptions && chartOptions.series) {
+        <apx-chart
+          [series]="chartOptions.series"
+          [chart]="chartOptions.chart"
+          [plotOptions]="chartOptions.plotOptions"
+          [xaxis]="chartOptions.xaxis"
+          [colors]="chartOptions.colors"
+          [stroke]="chartOptions.stroke"
+          [yaxis]="chartOptions.yaxis"
+          [grid]="chartOptions.grid"
+          [tooltip]="chartOptions.tooltip"
+        ></apx-chart>
+      } @else {
+        <div class="text-center py-3">
+          <div class="spinner-border spinner-border-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      }
     </div>
   </div>
 </div>
