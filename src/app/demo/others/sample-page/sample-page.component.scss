@@ -1,1 +1,87 @@
-// This file is intentionally left empty to allow customers to add custom CSS if needed.
+.post-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.post-card {
+  border: 1px solid #edf0f5;
+  border-radius: 12px;
+  padding: 16px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.post-author {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f2f4f7;
+  color: #333;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.author-name {
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.post-meta {
+  font-size: 12px;
+}
+
+.post-image-wrapper {
+  margin: 12px -16px 12px -16px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.post-image {
+  width: 100%;
+  display: block;
+  object-fit: contain;
+  max-height: 350px;
+}
+
+.post-body {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #2c2c2c;
+}
+
+.post-title {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.post-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.post-actions .btn {
+  padding: 4px 8px;
+  color: #5b6b7a;
+}
+
+.post-actions .btn:hover {
+  color: #1677ff;
+}

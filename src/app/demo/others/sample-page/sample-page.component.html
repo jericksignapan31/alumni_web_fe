@@ -1,10 +1,66 @@
 <div class="row">
   <div class="col-sm-12">
-    <app-card cardTitle="Hello">
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate dignissimos nemo animi quisquam, fugit repellat velit? Doloremque
-        maxime eveniet autem repellendus officia est! Ex dolore, quae reprehenderit enim vel reiciendis?
-      </p>
+    <app-card cardTitle="Alumni Network Posts">
+      @if (isLoading) {
+        <div class="text-center py-4">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      } @else if (errorMessage) {
+        <div class="alert alert-danger d-flex justify-content-between align-items-center" role="alert">
+          <span>{{ errorMessage }}</span>
+          <button class="btn btn-sm btn-light" (click)="loadPosts()">Retry</button>
+        </div>
+      } @else {
+        @if (!posts.length) {
+          <p class="mb-0 text-muted">No posts available.</p>
+        } @else {
+          <div class="post-feed">
+            @for (post of posts; track post.id ?? post.created_at ?? post) {
+              <div class="post-card">
+                <div class="post-header">
+                  <div class="post-author">
+                    <div class="avatar-placeholder">{{ getAuthorInitial(post) }}</div>
+                    <div>
+                      <div class="author-name">
+                        {{ getAuthorName(post) }}
+                      </div>
+                      <div class="post-meta text-muted">
+                        {{ getPostDate(post) | date: 'medium' }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="post-body">
+                  @if (post.title) {
+                    <h6 class="post-title mb-1">{{ post.title }}</h6>
+                  }
+                  <p class="mb-0">{{ post.content || post.body || 'No content provided.' }}</p>
+                </div>
+
+                @if (post.upload_optional) {
+                  <div class="post-image-wrapper">
+                    <img [src]="post.upload_optional" alt="post image" class="post-image" />
+                  </div>
+                }
+
+                <div class="post-actions">
+                  <button type="button" class="btn btn-link text-decoration-none">
+                    <i antIcon type="heart" theme="outline" class="me-1"></i>
+                    <span>{{ post.heart_count ?? post.reactions?.heart ?? 0 }}</span>
+                  </button>
+                  <button type="button" class="btn btn-link text-decoration-none">
+                    <i antIcon type="message" theme="outline" class="me-1"></i>
+                    <span>{{ post.comment_count ?? post.comments_count ?? post.comments?.length ?? 0 }}</span>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      }
     </app-card>
   </div>
 </div>

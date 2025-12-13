@@ -39,7 +39,19 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<AuthUser | null>(this.getUserFromStorage());
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    // Initialize auth state from localStorage on service creation
+    const storedUser = this.getUserFromStorage();
+    const token = this.getToken();
+    if (storedUser && token) {
+      this.currentUserSubject.next(storedUser);
+    }
+  }
+
+  initializeAuth(): void {
+    // Called from AppComponent to ensure auth state is properly loaded
+    // No-op if already initialized in constructor
+  }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials).pipe(
