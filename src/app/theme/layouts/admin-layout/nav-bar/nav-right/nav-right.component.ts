@@ -49,6 +49,7 @@ export class NavRightComponent {
   windowWidth: number;
   screenFull: boolean = true;
   direction: string = 'ltr';
+  currentUserName: string = 'User';
 
   // constructor
   constructor() {
@@ -75,6 +76,28 @@ export class NavRightComponent {
         WalletOutline
       ]
     );
+    this.loadCurrentUserName();
+  }
+
+  private loadCurrentUserName(): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      const firstName = currentUser?.first_name || '';
+      const lastName = currentUser?.last_name || '';
+      this.currentUserName = `${firstName} ${lastName}`.trim() || 'User';
+    } else {
+      try {
+        const raw = localStorage.getItem('current_user');
+        const user = raw ? JSON.parse(raw) : null;
+        if (user) {
+          const firstName = user?.first_name || '';
+          const lastName = user?.last_name || '';
+          this.currentUserName = `${firstName} ${lastName}`.trim() || 'User';
+        }
+      } catch (err) {
+        console.error('Failed to load current user name', err);
+      }
+    }
   }
 
   profile = [
