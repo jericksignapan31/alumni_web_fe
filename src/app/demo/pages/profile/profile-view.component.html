@@ -1,0 +1,115 @@
+<div class="fb-profile-page" *ngIf="currentUser; else noUser">
+  <!-- Cover Photo -->
+  <div class="cover">
+    <img class="cover-img" [src]="currentUser.cover_url || 'assets/images/profile/cover-default.jpg'" alt="cover" />
+    <button class="btn-edit-cover">Edit Cover</button>
+  </div>
+
+  <!-- Header with Avatar + Name -->
+  <div class="header">
+    <div class="avatar-wrap">
+      <div class="avatar">
+        <img *ngIf="currentUser.avatar_url; else initials" [src]="currentUser.avatar_url" alt="avatar" />
+        <ng-template #initials>{{ getInitials() }}</ng-template>
+      </div>
+      <button class="btn-edit-avatar">Update</button>
+    </div>
+    <div class="identity">
+      <h1 class="name">{{ getFullName() }}</h1>
+      <div class="sub">
+        <span class="role" *ngIf="currentUser.position">{{ currentUser.position }}</span>
+        <span class="email">{{ currentUser.email }}</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn primary">Add Story</button>
+      <button class="btn">Edit Profile</button>
+      <button class="btn">More</button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active">Timeline</button>
+    <button class="tab">About</button>
+    <button class="tab">Friends</button>
+    <button class="tab">Photos</button>
+    <button class="tab">More</button>
+  </div>
+
+  <!-- Content Grid -->
+  <div class="content">
+    <div class="left-col">
+      <div class="card about">
+        <h3>Intro</h3>
+        <ul class="intro-list">
+          <li>
+            <span>Campus:</span>
+            <strong>{{ currentUser.campus_id || 'N/A' }}</strong>
+          </li>
+          <li>
+            <span>Role:</span>
+            <strong>{{ currentUser.role_id || 'N/A' }}</strong>
+          </li>
+          <li>
+            <span>Joined:</span>
+            <strong>{{ currentUser.created_at | date: 'MMM d, yyyy' }}</strong>
+          </li>
+          <li>
+            <span>Status:</span>
+            @if (currentUser.is_verified) {
+              <strong class="text-success">Verified</strong>
+            } @else {
+              <strong class="text-warn">Not Verified</strong>
+            }
+          </li>
+        </ul>
+      </div>
+
+      <div class="card photos">
+        <h3>Photos</h3>
+        <div class="photo-grid">
+          <div class="photo" *ngFor="let n of [1, 2, 3, 4, 5, 6]">
+            <img [src]="currentUser.avatar_url || 'assets/images/profile/photo-placeholder.jpg'" alt="photo" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="card composer">
+        <div class="composer-row">
+          <div class="composer-avatar">{{ getInitials() }}</div>
+          <input class="composer-input" placeholder="What's on your mind, {{ currentUser.first_name }}?" />
+        </div>
+        <div class="composer-actions">
+          <button class="composer-btn">Live video</button>
+          <button class="composer-btn">Photo/video</button>
+          <button class="composer-btn">Feeling/activity</button>
+        </div>
+      </div>
+
+      <div class="card post" *ngFor="let p of [1, 2, 3]">
+        <div class="post-header">
+          <div class="post-avatar">{{ getInitials() }}</div>
+          <div class="post-meta">
+            <div class="post-author">{{ getFullName() }}</div>
+            <div class="post-time">Just now · Public</div>
+          </div>
+        </div>
+        <div class="post-body">This is a sample post in your timeline.</div>
+        <div class="post-actions">
+          <button class="action">Like</button>
+          <button class="action">Comment</button>
+          <button class="action">Share</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noUser>
+  <div class="no-user">
+    <p>No user information available. Please login again.</p>
+  </div>
+</ng-template>

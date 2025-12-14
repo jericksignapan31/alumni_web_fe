@@ -33,6 +33,10 @@ const routes: Routes = [
       {
         path: 'alumni-network',
         loadComponent: () => import('./demo/others/sample-page/sample-page.component').then((c) => c.SamplePageComponent)
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./demo/pages/profile/profile-view.component').then((c) => c.ProfileViewComponent)
       }
     ]
   },

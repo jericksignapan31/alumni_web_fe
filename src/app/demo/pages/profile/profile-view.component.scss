@@ -1,0 +1,280 @@
+.fb-profile-page {
+  max-width: 1100px;
+  margin: 0 auto 24px;
+  padding: 0 16px;
+}
+
+.cover {
+  position: relative;
+  height: 320px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eaeaea;
+}
+
+.cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-edit-cover {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: end;
+  gap: 16px;
+  margin-top: -60px;
+}
+
+.avatar-wrap {
+  position: relative;
+}
+
+.avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 6px solid #fff;
+  background: #f0f0f0;
+  display: grid;
+  place-items: center;
+  font-size: 46px;
+  font-weight: 700;
+  color: #333;
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-edit-avatar {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  background: #1677ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.identity .name {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.identity .sub {
+  display: flex;
+  gap: 12px;
+  color: #666;
+  font-size: 14px;
+}
+
+.header-actions .btn {
+  background: #f0f2f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+.header-actions .btn.primary {
+  background: #1677ff;
+  color: #fff;
+  border: none;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  margin-top: 16px;
+  padding: 8px 0;
+}
+
+.tab {
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #555;
+}
+
+.tab.active {
+  background: #e7f1ff;
+  color: #1677ff;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 10px 32px -18px rgba(0, 0, 0, 0.25);
+}
+
+.about h3,
+.photos h3 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.intro-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.text-success {
+  color: #22c55e;
+}
+.text-warn {
+  color: #f59e0b;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.photo {
+  aspect-ratio: 1/1;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.composer-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.composer-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e9ecef;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+.composer-input {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 10px 14px;
+}
+
+.composer-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.composer-btn {
+  background: #f0f2f5;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.post-header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.post-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e9ecef;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+.post-meta {
+  font-size: 12px;
+  color: #666;
+}
+.post-author {
+  font-weight: 700;
+  color: #000;
+}
+.post-body {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.action {
+  background: #f0f2f5;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+@media (max-width: 992px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .avatar {
+    width: 120px;
+    height: 120px;
+  }
+  .identity .name {
+    font-size: 22px;
+  }
+}

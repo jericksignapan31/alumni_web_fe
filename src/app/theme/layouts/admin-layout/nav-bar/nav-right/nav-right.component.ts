@@ -102,17 +102,10 @@ export class NavRightComponent {
 
   profile = [
     {
-      icon: 'edit',
-      title: 'Edit Profile'
-    },
-    {
       icon: 'user',
       title: 'View Profile'
     },
-    {
-      icon: 'profile',
-      title: 'Social Profile'
-    },
+
     {
       icon: 'wallet',
       title: 'Billing'
@@ -131,14 +124,6 @@ export class NavRightComponent {
     {
       icon: 'user',
       title: 'Account Settings'
-    },
-    {
-      icon: 'lock',
-      title: 'Privacy Center'
-    },
-    {
-      icon: 'comment',
-      title: 'Feedback'
     },
     {
       icon: 'unordered-list',
@@ -161,13 +146,7 @@ export class NavRightComponent {
   onProfileItemClick(itemTitle: string): void {
     if (itemTitle === 'Logout') {
       this.logout();
-    } else if (itemTitle === 'Edit Profile') {
-      // Navigate to edit profile page
-      this.router.navigate(['/edit-profile']);
     } else if (itemTitle === 'View Profile') {
-      // Navigate to view profile page
-      this.router.navigate(['/profile']);
-    } else if (itemTitle === 'Social Profile') {
       // Navigate to social profile page
       this.router.navigate(['/social-profile']);
     } else if (itemTitle === 'Billing') {
