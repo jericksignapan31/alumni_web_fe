@@ -147,8 +147,8 @@ export class NavRightComponent {
     if (itemTitle === 'Logout') {
       this.logout();
     } else if (itemTitle === 'View Profile') {
-      // Navigate to social profile page
-      this.router.navigate(['/social-profile']);
+      // Navigate to profile page
+      this.router.navigate(['/profile']);
     } else if (itemTitle === 'Billing') {
       // Navigate to billing page
       this.router.navigate(['/billing']);
